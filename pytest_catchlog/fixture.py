@@ -42,6 +42,18 @@ class LogCaptureFixture(object):
         """
         return [(r.name, r.levelno, r.getMessage()) for r in self.records]
 
+    def filter_record_tuples(self, name=None, level=None, message=None):
+        """Returns a filtered list of record tuples for use in asserts
+
+        Args:
+            name (str, optional): Exact match of the logger name
+            level (int, optional): The log level of the record
+            message (str|regex, optional): Message part that should be in the record text or 
+                the regular expression the record text should match
+        """
+        # @TODO implement
+        return self.record_tuples
+
     def clear(self):
         """Reset the list of log records."""
         self.handler.records = []

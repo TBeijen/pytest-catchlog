@@ -2,6 +2,7 @@
 import sys
 import logging
 
+import pytest
 
 logger = logging.getLogger(__name__)
 sublogger = logging.getLogger(__name__+'.baz')
@@ -57,6 +58,24 @@ def test_record_tuples(caplog):
     assert caplog.record_tuples == [
         (__name__, logging.INFO, 'boo arg'),
     ]
+
+
+@pytest.mark.parametrize('name, level, message, expected', [
+    (__name__, logging.INFO, None, ['foo', 'bar']),
+    (__name__, logging.INFO, 'foo', ['foo']),
+    (__name__, logging.INFO, 'o ar', ['foo']),
+    ('other', logging.INFO, 'foo', []),
+    (__name__, logging.WARNING, 'foo', []),
+])
+def test_filter_record_tuples(caplog, name, level, message, expected):
+    logger.info('foo %s', 'arg')
+    logger.info('bar %s', 'arg')
+
+    filtered = caplog.filter_record_tuples(name, level, message)
+    filtered_named_args = caplog.filter_record_tuples(name=name, level=level, message=message)
+
+    assert filtered == filtered_named_args
+    assert [f[2].split(' ')[0] for f in filtered] == expected
 
 
 def test_unicode(caplog):
