@@ -35,6 +35,14 @@ class LogCaptureFixture(object):
         return self.handler.records
 
     def filter_records(self,  name=None, level=None, message=None):
+        """Returns a filtered list of records
+
+        Args:
+            name (str, optional): Exact match of the logger name
+            level (int, optional): The log level of the record
+            message (str|regex, optional): Message part that should be in the record text or
+                the regular expression the record text should match
+        """
         return self._filter_records(name, level, message)
 
     @property
@@ -46,7 +54,7 @@ class LogCaptureFixture(object):
 
             (logger_name, log_level, message)
         """
-        return [(r.name, r.levelno, r.getMessage()) for r in self.records]
+        return self._make_tuples(self.records)
 
     def filter_record_tuples(self, name=None, level=None, message=None):
         """Returns a filtered list of record tuples for use in asserts
@@ -57,8 +65,7 @@ class LogCaptureFixture(object):
             message (str|regex, optional): Message part that should be in the record text or 
                 the regular expression the record text should match
         """
-        # @TODO implement
-        return self.record_tuples
+        return self._make_tuples(self._filter_records(name, level, message))
 
     def clear(self):
         """Reset the list of log records."""
@@ -87,6 +94,7 @@ class LogCaptureFixture(object):
         return logging_at_level(level, obj)
 
     def _filter_records(self, name, level, message):
+        """Filter records on given args"""
         def _filter(r):
             if name and not r.name == name:
                 return False
@@ -101,6 +109,10 @@ class LogCaptureFixture(object):
                         return False
             return True
         return list(filter(_filter, self.handler.records))
+
+    def _make_tuples(self, records):
+        """Convert records to tuples"""
+        return [(r.name, r.levelno, r.getMessage()) for r in records]
 
 
 class CallablePropertyMixin(object):
