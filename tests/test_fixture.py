@@ -78,6 +78,24 @@ def test_filter_record_tuples(caplog, name, level, message, expected):
     assert [f[2].split(' ')[0] for f in filtered] == expected
 
 
+@pytest.mark.parametrize('level', [
+    'CRITICAL',
+    'ERROR',
+    'WARNING',
+    'WARN',  # deprecated
+    'INFO',
+    'DEBUG',
+    'NOTSET',
+])
+def test_levels(caplog, level):
+    assert getattr(caplog.levels, level) == getattr(logging, level)
+
+
+def test_levels_error(caplog):
+    with pytest.raises(AttributeError):
+        getattr(caplog.levels, 'UNKNOWNLEVEL')
+
+
 def test_unicode(caplog):
     logger.info(u('bū'))
     assert caplog.records[0].levelname == 'INFO'
