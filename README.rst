@@ -149,12 +149,15 @@ given severity and message::
 
 To aid in common test scenarios, caplog exposes logging levels under 
 ``caplog.levels`` to prevent the need to import the ``logging`` module in tests.
-Furthermore ``filter_record_tuples`` can be used to easily filter log messages of
-a particular logger. This ise specially useful for testing composite systems where 
+
+Furthermore ``filter_records`` or ``filter_record_tuples`` can be used to easily filter
+log messages of a particular logger. This is especially useful for testing composite systems where
 several components have loggers::
 
     def test_foo(caplog):
         func_under_test()
+
+        assert not any([r.levelno >= caplog.ERROR for r in caplog.filter_records('components.a')])
 
         assert caplog.filter_record_tuples('components.a', caplog.levels.INFO, 'foo')
         assert caplog.filter_record_tuples('components.b', caplog.levels.INFO, re.compile(r'foo\s.+'))
