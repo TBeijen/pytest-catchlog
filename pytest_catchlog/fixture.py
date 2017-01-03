@@ -34,6 +34,9 @@ class LogCaptureFixture(object):
         """Returns the list of log records."""
         return self.handler.records
 
+    def filter_records(self,  name=None, level=None, message=None):
+        return self._filter_records(name, level, message)
+
     @property
     def record_tuples(self):
         """Returns a list of a striped down version of log records intended
@@ -82,6 +85,22 @@ class LogCaptureFixture(object):
 
         obj = logger and logging.getLogger(logger) or self.handler
         return logging_at_level(level, obj)
+
+    def _filter_records(self, name, level, message):
+        def _filter(r):
+            if name and not r.name == name:
+                return False
+            if level and not r.levelno == level:
+                return False
+            if message:
+                try:
+                    if not bool(message.search(r.getMessage())):
+                        return False
+                except AttributeError:
+                    if message not in r.getMessage():
+                        return False
+            return True
+        return list(filter(_filter, self.handler.records))
 
 
 class CallablePropertyMixin(object):

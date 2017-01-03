@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 import sys
 import logging
 
@@ -15,6 +16,8 @@ filter_params = [
     (__name__, logging.INFO, 'o ar', ['foo']),
     ('other', logging.INFO, 'foo', []),
     (__name__, logging.WARNING, 'foo', []),
+    (__name__, logging.INFO, re.compile('o\s'), ['foo']),
+    (__name__, logging.INFO, re.compile('foo$'), []),
 ]
 
 
@@ -77,7 +80,7 @@ def test_filter_records(caplog, name, level, message, expected):
     filtered_named_args = caplog.filter_records(name=name, level=level, message=message)
 
     assert filtered == filtered_named_args
-    assert [f.msg.split(' ')[0] for f in filtered] == expected
+    assert [f.getMessage().split(' ')[0] for f in filtered] == expected
 
 
 @pytest.mark.parametrize('name, level, message, expected', filter_params)
