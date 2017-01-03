@@ -96,18 +96,17 @@ def test_filter_record_tuples(caplog, name, level, message, expected):
     'CRITICAL',
     'ERROR',
     'WARNING',
-    'WARN',  # deprecated
     'INFO',
     'DEBUG',
     'NOTSET',
 ])
 def test_levels(caplog, level):
-    assert getattr(caplog.levels, level) == getattr(logging, level)
+    assert getattr(caplog, level) == getattr(logging, level)
 
 
 def test_levels_error(caplog):
     with pytest.raises(AttributeError):
-        getattr(caplog.levels, 'UNKNOWNLEVEL')
+        getattr(caplog, 'UNKNOWNLEVEL')
 
 
 def test_unicode(caplog):
