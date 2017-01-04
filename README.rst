@@ -147,8 +147,8 @@ given severity and message::
             ('root', logging.INFO, 'boo arg'),
         ]
 
-To aid in common test scenarios, caplog exposes logging levels under 
-``caplog.levels`` to prevent the need to import the ``logging`` module in tests.
+To aid in common test scenarios, caplog exposes logging levels to prevent the
+need to import the ``logging`` module in tests.
 
 Furthermore ``filter_records`` or ``filter_record_tuples`` can be used to easily filter
 log messages of a particular logger. This is especially useful for testing composite systems where
@@ -159,8 +159,8 @@ several components have loggers::
 
         assert not any([r.levelno >= caplog.ERROR for r in caplog.filter_records('components.a')])
 
-        assert caplog.filter_record_tuples('components.a', caplog.levels.INFO, 'foo')
-        assert caplog.filter_record_tuples('components.b', caplog.levels.INFO, re.compile(r'foo\s.+'))
+        assert caplog.filter_record_tuples('components.a', caplog.INFO, 'foo')
+        assert caplog.filter_record_tuples('components.b', caplog.INFO, re.compile(r'foo\s.+'))
 
 You can call ``caplog.clear()`` to reset the captured log records in a test::
 
