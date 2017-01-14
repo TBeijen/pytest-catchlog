@@ -16,9 +16,12 @@ class LogCaptureFixture(object):
     def __init__(self, item):
         """Creates a new funcarg."""
         self._item = item
-        # set logging levels to facilitate use without needing to import logging
-        for level in ['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG', 'NOTSET']:
-            setattr(self, level, getattr(logging, level))
+
+    def __getattr__(self, name):
+        if name.isupper() and name.isalpha():
+            # lookup names matching level pattern in logging module
+            return getattr(logging, name)
+        return getattr(self, name)
 
     @property
     def handler(self):
