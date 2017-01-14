@@ -16,9 +16,17 @@ filter_params = [
     (__name__, logging.INFO, 'o ar', ['foo']),
     ('other', logging.INFO, 'foo', []),
     (__name__, logging.WARNING, 'foo', []),
+    (__name__, 45, 'foo arg', ['foo']),
     (__name__, logging.INFO, re.compile('o\s'), ['foo']),
     (__name__, logging.INFO, re.compile('foo$'), []),
 ]
+
+
+def do_test_filter_record_logging():
+    """do logging for tests parametrized by filter_params"""
+    logger.info('foo %s', 'arg')
+    logger.info('bar %s', 'arg')
+    logger.log(45, 'foo %s', 'arg')
 
 
 def test_fixture_help(testdir):
@@ -73,8 +81,7 @@ def test_record_tuples(caplog):
 
 @pytest.mark.parametrize('name, level, message, expected', filter_params)
 def test_filter_records(caplog, name, level, message, expected):
-    logger.info('foo %s', 'arg')
-    logger.info('bar %s', 'arg')
+    do_test_filter_record_logging()
 
     filtered = caplog.filter_records(name, level, message)
     filtered_named_args = caplog.filter_records(name=name, level=level, message=message)
@@ -85,8 +92,7 @@ def test_filter_records(caplog, name, level, message, expected):
 
 @pytest.mark.parametrize('name, level, message, expected', filter_params)
 def test_filter_record_tuples(caplog, name, level, message, expected):
-    logger.info('foo %s', 'arg')
-    logger.info('bar %s', 'arg')
+    do_test_filter_record_logging()
 
     filtered = caplog.filter_record_tuples(name, level, message)
     filtered_named_args = caplog.filter_record_tuples(name=name, level=level, message=message)
