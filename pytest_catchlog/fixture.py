@@ -21,7 +21,7 @@ class LogCaptureFixture(object):
         if name.isupper() and name.isalpha():
             # lookup names matching level pattern in logging module
             return getattr(logging, name)
-        raise AttributeError("'{}' object has no attribute ''".format(
+        raise AttributeError("'{}' object has no attribute '{}'".format(
             type(self).__name__,
             name
         ))
