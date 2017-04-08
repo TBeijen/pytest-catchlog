@@ -113,9 +113,13 @@ def test_levels(caplog, level):
     assert getattr(caplog, level) == getattr(logging, level)
 
 
-def test_levels_error(caplog):
+@pytest.mark.parametrize('level', [
+    'UNKNOWNLEVEL',  # Matches log level pattern, looked up from logging module.
+    'something_else'  # Not looked up from logging. Not an attribute of LogCaptureFixture.
+])
+def test_levels_error(caplog, level):
     with pytest.raises(AttributeError):
-        getattr(caplog, 'UNKNOWNLEVEL')
+        getattr(caplog, level)
 
 
 def test_unicode(caplog):
